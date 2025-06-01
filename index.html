@@ -1,26 +1,176 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Instant Weather</title>
-    <link rel="stylesheet" href="CSS/styles.css">
+  <meta charset="UTF-8" />
+  <title>Instant Weather</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- ========== FEUILLE DE STYLE PRINCIPALE ========== -->
+  <link rel="stylesheet" href="styles.css" />
+
+  <!-- ========== LEAFLET CSS (si vous l’utilisez) ========== -->
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+  />
+
+  <!-- ========== CHART.JS (si vous l’utilisez) ========== -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-    <div class="container">
-        <h1>Instant Weather</h1>
-        <div id="currentDate"></div> 
-        <form id="weatherForm">
-            <label for="postalCode">Code Postal :</label>
-            <input type="text" id="postalCode" name="postalCode" required>
-            <button type="submit">Rechercher</button>
-        </form>
-        <select id="citySelect" style="display:none;">
-            <option value="">--Sélectionnez une ville--</option>
-        </select>
-        <div id="weatherInfo"></div>
-    </div>
-    <script src="JAVA/recupinfoville.js"></script>
-    <script src="JAVA/recupinfometeo.js"></script>
+  <div id="app-container">
+    <!-- =======================================================
+         HEADER : logo centré + bouton sombre/clair en haut à droite
+         ======================================================= -->
+    <header>
+      <!-- Vérifiez bien que ce fichier existe : img/logo.png -->
+      <img src="img/logo.png" alt="Instant Weather" class="logo" />
+
+      <!-- BOUTON 🌙/☀️ POUR BASCULER LE THÈME -->
+      <button id="toggle-theme" class="btn-icon" aria-label="Basculer thème sombre / clair">
+        🌙
+      </button>
+    </header>
+
+    <!-- ========== SECTION RECHERCHE (FORMULAIRE) ========== -->
+    <section id="search-section">
+      <form id="weatherForm">
+        <!-- Champ « Ville » -->
+        <div class="form-group">
+          <label for="ville">Ville&nbsp;:</label>
+          <input
+            type="text"
+            id="ville"
+            placeholder="Ex. 75000 ou Paris"
+            aria-required="true"
+          />
+        </div>
+
+        <!-- Champ « Nombre de jours » -->
+        <div class="form-group">
+          <label for="jours">Nombre de jours&nbsp;:</label>
+          <div class="slider-container">
+            <input
+              type="range"
+              id="jours"
+              min="1"
+              max="7"
+              value="1"
+              oninput="this.nextElementSibling.innerText = this.value + (this.value > 1 ? ' jours' : ' jour')"
+            />
+            <span class="slider-value">1 jour</span>
+          </div>
+        </div>
+
+        <!-- Fieldset « Informations supplémentaires » -->
+        <fieldset class="infos-sup">
+          <legend>Informations supplémentaires&nbsp;:</legend>
+          <label>
+            <input type="checkbox" name="infos" value="latitude" />
+            Latitude
+          </label>
+          <label>
+            <input type="checkbox" name="infos" value="longitude" />
+            Longitude
+          </label>
+          <label>
+            <input type="checkbox" name="infos" value="pluie" />
+            Cumul de pluie (mm)
+          </label>
+          <label>
+            <input type="checkbox" name="infos" value="vent" />
+            Vent moyen (km/h)
+          </label>
+          <label>
+            <input type="checkbox" name="infos" value="direction" />
+            Direction du vent (°)
+          </label>
+        </fieldset>
+
+        <!-- Boutons d’action -->
+        <div class="buttons-container">
+          <button type="submit" class="btn-primary">Afficher la météo</button>
+          <button type="button" id="toggle-units" class="btn-secondary">Passer en °F</button>
+          <button type="button" id="geo-btn" class="btn-secondary">📍 Utiliser ma position</button>
+        </div>
+      </form>
+    </section>
+
+    <!-- ========== SECTION CARTE LEAFLET ========== -->
+    <section id="map-section">
+      <h2 id="commune-name"></h2>
+
+      <!-- Conteneur pour afficher latitude/longitude si sélectionné -->
+      <div id="coords"></div>
+
+      <!-- Loader lors du fetch météo -->
+      <div id="loader" class="hidden">
+        <p>Chargement en cours…</p>
+      </div>
+
+      <!-- Conteneur carte Leaflet -->
+      <div id="map-container">
+        <div id="mapid" class="hidden" role="application" aria-label="Carte de localisation"></div>
+      </div>
+    </section>
+
+    <!-- ========== SECTION PRÉVISIONS MÉTÉO ========== -->
+    <section id="forecast-section">
+      <div id="forecast-container">
+        <!-- Les forecast-cards seront injectées ici par recupinfometeo.js -->
+      </div>
+    </section>
+
+    <!-- ========== SECTION GRAPHIQUE (Chart.js) ========== -->
+    <section id="chart-section">
+      <h3 class="chart-title">Graphique des températures pour plusieurs jours</h3>
+      <canvas id="tempChart"></canvas>
+    </section>
+
+    <!-- ========== FOOTER ========== -->
+    <footer>
+      © 2025 Instant Weather – Tous droits réservés
+    </footer>
+  </div> <!-- /#app-container -->
+
+  <!-- ========== SCRIPTS ========== -->
+  <!-- 1) Leaflet JS (si vous utilisez une carte) -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <!-- 2) Vos scripts métier -->
+  <script src="recupinfometeo.js"></script>
+  <script src="recupinfoville.js"></script>
+
+  <!-- 3) Script bascule sombre/clair (toggle-theme) -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      console.log('✅ DOMContentLoaded déclenché');
+      const btnToggle = document.getElementById('toggle-theme');
+      console.log('🔍 Bouton bascule trouvé :', btnToggle);
+
+      if (!btnToggle) {
+        console.error('❌ Bouton toggle-theme introuvable');
+        return;
+      }
+
+      //  Au chargement, on regarde dans localStorage si l’utilisateur avait demandé le "dark"
+      if (localStorage.getItem('theme') === 'dark') {
+        document.body.classList.add('dark-mode');
+        btnToggle.textContent = '☀️';
+        console.log('⚫️ Chargement en MODE SOMBRE, icône ☀️');
+      } else {
+        btnToggle.textContent = '🌙';
+        console.log('🔆 Chargement en MODE CLAIR, icône 🌙');
+      }
+
+      btnToggle.addEventListener('click', () => {
+        console.log('👉 Bouton 🌙/☀️ cliqué');
+        document.body.classList.toggle('dark-mode');
+        const isDark = document.body.classList.contains('dark-mode');
+        btnToggle.textContent = isDark ? '☀️' : '🌙';
+        localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        console.log(isDark ? '⚫️ Passage en SOMBRE' : '🔆 Passage en CLAIR');
+      });
+    });
+  </script>
 </body>
 </html>

@@ -1,0 +1,493 @@
+/* ===========================================================
+   RESET ET STYLES GÉNÉRAUX
+   =========================================================== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* ===========================================================
+   BODY : FOND « MODE CLAIR » OU « MODE SOMBRE »
+   =========================================================== */
+/* 1) Mode clair par défaut */
+body {
+  background: #f0f4f8;   /* Gris très clair (mode clair) */
+  color: #333333;        /* Texte sombre */
+  font-family: 'Segoe UI', Arial, sans-serif;
+  line-height: 1.5;
+  margin: 0;
+  padding: 0 1rem;
+}
+
+/* 2) Mode sombre, quand <body> a class="dark-mode" */
+body.dark-mode {
+  background: #131414;   /* Bleu foncé (mode sombre) */
+  color: #ffffff;        /* Texte blanc */
+}
+
+/* ===========================================================
+   CONTENEUR PRINCIPAL
+   =========================================================== */
+#app-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1rem 1rem;
+}
+
+/* ===========================================================
+   HEADER
+   (logo centré, bouton thème en haut à droite)
+   =========================================================== */
+header {
+  position: relative;            /* Pour pouvoir positionner le bouton en absolu */
+  display: flex;
+  justify-content: center;       /* Centre horizontalement le logo */
+  align-items: center;           /* Centre verticalement le logo */
+  margin: 0;
+  padding: 0.5rem 0;              /* Réduit l’espace haut/bas */
+}
+
+/* Logo centré avec hauteur fixe de 350px */
+header .logo {
+  height: 350px;
+  width: auto;
+  display: block;
+  margin: 0 auto;
+}
+
+/* Bouton icône bascule sombre/clair (🌙/☀️) */
+#toggle-theme {
+  position: absolute;
+  right: 1rem;         /* En haut à droite du header */
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  font-size: 1.8rem;   /* Taille adaptée pour l’emoji */
+  cursor: pointer;
+  color: #333333;      /* Couleur emoji par défaut (mode clair) */
+  padding: 0.25rem;
+  transition: color 0.2s ease;
+}
+
+#toggle-theme:hover {
+  color: #555555;
+}
+
+/* En mode sombre (dark-mode), on change la couleur du ☀️ */
+body.dark-mode #toggle-theme {
+  color: #ffffff;
+}
+body.dark-mode #toggle-theme:hover {
+  color: #dddddd;
+}
+
+/* ===========================================================
+   SECTION RECHERCHE (FORMULAIRE)
+   =========================================================== */
+#search-section {
+  background: #ffffff;
+  color: #333333;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  padding: 1.5rem 2rem;
+  margin-top: 1rem;    /* Espace sous le header */
+  margin-bottom: 2rem;
+}
+
+/* Lorsque l’on est en "dark-mode", on garde toujours le formulaire blanc */
+body.dark-mode #search-section {
+  background: #ffffff;
+  color: #333333;
+}
+
+#search-section .form-group {
+  margin-bottom: 1.2rem;
+}
+
+#search-section label {
+  font-weight: 600;
+  margin-bottom: 0.3rem;
+  display: block;
+  font-size: 0.95rem;
+}
+
+#search-section input[type="text"] {
+  width: 100%;
+  padding: 0.8rem 1rem;
+  border: 1px solid #cccccc;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: border-color 0.2s;
+}
+
+#search-section input[type="text"]:focus {
+  outline: none;
+  border-color: #1A3A66;
+}
+
+#search-section .slider-container {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+#search-section input[type="range"] {
+  width: 100%;
+  margin: 0.5rem 0;
+  appearance: none;
+  height: 6px;
+  border-radius: 5px;
+  background: linear-gradient(90deg, #1A3A66, #4978A0);
+}
+
+#search-section input[type="range"]::-webkit-slider-thumb {
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #1A3A66;
+  cursor: pointer;
+  box-shadow: 0 0 5px rgba(26, 58, 102, 0.5);
+}
+
+#search-section .slider-value {
+  font-size: 0.9rem;
+  color: #555555;
+}
+
+/* ===========================================================
+   FIELDSET « Informations supplémentaires »
+   (centré et plus étroit)
+   =========================================================== */
+.infos-sup {
+  max-width: 500px;        /* Largeur max fixe (réduite) */
+  margin: 0 auto 1.5rem;   /* Centre horizontalement + 1.5rem dessous */
+  padding: 1rem;           /* Espace intérieur */
+  border-radius: 8px;      /* Angles arrondis */
+  background: #f7f7f7;     /* Fond gris très clair */
+  border: 1px solid #dddddd;
+  text-align: left;        /* Alignement à gauche pour les labels */
+}
+
+/* En dark-mode : on garde exactement le même visuel pour le fieldset */
+body.dark-mode .infos-sup {
+  background: #f7f7f7;
+  border: 1px solid #dddddd;
+}
+
+.infos-sup legend {
+  padding: 0 0.5rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: #333333;
+}
+
+.infos-sup label {
+  display: block;          /* Chaque label sur une ligne */
+  margin-bottom: 0.5rem;   /* Espace entre lignes */
+  font-size: 0.9rem;
+  color: #333333;
+}
+
+/* Sur mobile (<600px), le fieldset passe à 90% */
+@media (max-width: 600px) {
+  .infos-sup {
+    max-width: 90%;
+    margin-bottom: 1rem;
+  }
+}
+
+/* ===========================================================
+   STYLES POUR LES BOUTONS DANS #search-section
+   =========================================================== */
+/* Container boutons : flexbox pour espacer */
+.buttons-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;         /* Espace entre boutons */
+  margin-top: 1rem;     /* Espace au-dessus */
+}
+
+/* Style commun à tous les boutons */
+.buttons-container button {
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: 8px;
+  padding: 0.75rem 1.5rem;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+/* Bouton principal (btn-primary) */
+.btn-primary {
+  background: linear-gradient(90deg, #1A3A66, #4978A0);
+  color: #ffffff;
+  border: none;
+}
+
+.btn-primary:hover {
+  background: linear-gradient(90deg, #163f5e, #3d6a8a);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Bouton secondaire (btn-secondary) */
+.btn-secondary {
+  background-color: #ffffff;
+  color: #1A3A66;
+  border: 2px solid #1A3A66;
+}
+
+.btn-secondary:hover {
+  background-color: #1A3A66;
+  color: #ffffff;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Responsive (<500px) : boutons en pleine largeur */
+@media (max-width: 500px) {
+  .buttons-container {
+    gap: 0.5rem;
+  }
+  .buttons-container button {
+    width: 100%;
+    text-align: center;
+    padding: 0.6rem 1rem;
+    font-size: 0.95rem;
+  }
+}
+
+/* ===========================================================
+   SECTION CARTE LEAFLET
+   =========================================================== */
+#map-section {
+  margin-bottom: 2rem;
+}
+
+#commune-name {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  text-align: center;
+  color: #333333;
+}
+
+/* En mode sombre, on change la couleur du titre de la commune en blanc */
+body.dark-mode #commune-name {
+  color: #ffffff;
+}
+
+#coords {
+  text-align: center;
+  margin-bottom: 0.5rem;
+  color: #000000; /* Texte noir par défaut */
+}
+
+#loader {
+  text-align: center;
+  font-style: italic;
+  color: #666666;
+}
+
+/* En mode sombre, loader un peu plus clair */
+body.dark-mode #loader {
+  color: #dddddd;
+}
+
+#map-container {
+  border: 2px solid #57B8E8;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+#mapid {
+  width: 100%;
+  height: 350px;
+  background: #ffffff;
+}
+
+/* Masque via .hidden */
+.hidden {
+  display: none !important;
+}
+
+/* ===========================================================
+   SECTION PRÉVISIONS MÉTÉO
+   Avec hauteur minimale et centrage en flex
+   =========================================================== */
+#forecast-section {
+  margin-bottom: 2rem;
+}
+
+#forecast-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  justify-content: center;
+}
+
+.forecast-card {
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  width: 240px;            /* largeur augmentée */
+  min-height: 350px;       /* hauteur minimale */
+  padding: 1rem;           /* on uniformise le padding */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* espace entre titre et footer de la carte */
+  text-align: center;
+  color: #333333;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.forecast-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.1);
+}
+
+.forecast-card h3 {
+  font-size: 1rem;
+  margin-bottom: 0.75rem;
+  text-transform: capitalize;
+}
+
+/* -----------------------------------------------------------
+   ICÔNE : on la met en display:block + margin:0 auto
+   pour qu’elle soit parfaitement centrée
+   ----------------------------------------------------------- */
+.forecast-card img {
+  display: block;
+  margin: 0 auto 0.5rem;  /* 0.5rem en bas pour espacer du texte */
+  width: 50px;
+  height: 50px;
+}
+
+/* -----------------------------------------------------------
+   RESTE DU CONTENU (température, description, minmax, extra-info)
+   ----------------------------------------------------------- */
+.forecast-card .temp-value {
+  font-size: 1.75rem;
+  font-weight: bold;
+  color: #1A3A66;
+  margin-bottom: 0.25rem;
+}
+
+.forecast-card .description {
+  font-size: 0.9rem;
+  color: #555555;
+  margin-bottom: 0.5rem;
+}
+
+.forecast-card .minmax {
+  font-size: 0.8rem;
+  color: #777777;
+  margin-bottom: 0.75rem;
+}
+
+.forecast-card .extra-info {
+  display: flex;
+  flex-direction: column; /* on empile ces infos verticalement */
+  font-size: 0.85rem;
+  margin-top: auto;       /* repousse ces infos tout en bas si besoin */
+  gap: 0.3rem;
+}
+
+.extra-label {
+  font-weight: 600;
+  color: #333333;
+}
+
+.extra-value {
+  color: #1A3A66;
+}
+
+/* Responsive : si l’écran est petit, on réduit la largeur et la hauteur */
+@media (max-width: 600px) {
+  .forecast-card {
+    width: 90%;
+    min-height: 300px; /* réduire un peu sur petit écran */
+  }
+}
+
+/* ===========================================================
+   SECTION GRAPHIQUE (Chart.js)
+   =========================================================== */
+#chart-section {
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  padding: 1rem;
+  margin-bottom: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.chart-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #333333;
+  margin-bottom: 0.75rem;
+  text-align: center;
+}
+
+/* En mode sombre, on change le texte en blanc */
+body.dark-mode .chart-title {
+  color: #ffffff;
+}
+
+/* -----------------------------------------------------------
+   Augmentation de la hauteur du graphique (400px au lieu de 300px)
+   ----------------------------------------------------------- */
+#tempChart {
+  width: 100% !important;
+  max-width: 100% !important;
+  height: 400px !important; /* hauteur augmentée */
+}
+
+/* ===========================================================
+   PIED DE PAGE
+   =========================================================== */
+footer {
+  text-align: center;
+  padding: 1rem;
+  font-size: 0.85rem;
+  color: #666666;
+}
+
+/* En mode sombre, on change la couleur du texte du footer */
+body.dark-mode footer {
+  color: #dddddd;
+}
+
+/* ===========================================================
+   RESPONSIVE GÉNÉRAL
+   =========================================================== */
+@media (max-width: 900px) {
+  #forecast-container {
+    flex-direction: column;
+    align-items: center;
+  }
+  .forecast-card {
+    width: 90%;
+  }
+}
+
+@media (max-width: 600px) {
+  #mapid {
+    height: 200px;
+  }
+  #app-container {
+    padding: 0.5rem 0.5rem;
+  }
+  header .logo {
+    height: 250px; /* Réduit le logo sur petit écran */
+  }
+  #search-section {
+    margin-top: 0.5rem;
+  }
+}
