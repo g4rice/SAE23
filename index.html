@@ -5,16 +5,16 @@
   <title>Instant Weather</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <!-- ========== FEUILLE DE STYLE PRINCIPALE ========== -->
+  <!-- FEUILLE DE STYLE PRINCIPALE -->
   <link rel="stylesheet" href="styles.css" />
 
-  <!-- ========== LEAFLET CSS (si vous l’utilisez) ========== -->
+  <!-- LEAFLET CSS (si vous l’utilisez) -->
   <link
     rel="stylesheet"
     href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
   />
 
-  <!-- ========== CHART.JS (si vous l’utilisez) ========== -->
+  <!-- CHART.JS (si vous l’utilisez) -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
@@ -24,7 +24,11 @@
          ======================================================= -->
     <header>
       <img src="img/logo.png" alt="Instant Weather" class="logo" />
-      <button id="toggle-theme" class="btn-icon" aria-label="Basculer thème sombre / clair">
+      <button
+        id="toggle-theme"
+        class="btn-icon"
+        aria-label="Basculer thème sombre / clair"
+      >
         🌙
       </button>
     </header>
@@ -41,10 +45,15 @@
             <input
               type="text"
               id="ville"
-              placeholder="Ex : Marseille ou 13000"
+              placeholder="Ex : Caen ou 14000"
               aria-required="true"
             />
-            <button type="button" id="geo-btn" class="btn-secondary geo-button" title="Utiliser ma position">
+            <button
+              type="button"
+              id="geo-btn"
+              class="btn-secondary geo-button"
+              title="Utiliser ma position"
+            >
               📍
             </button>
           </div>
@@ -100,16 +109,19 @@
 
         <!-- ====== BOUTON « Passer en °F » CENTRÉ SOUS « Afficher la météo » ====== -->
         <div class="center-button">
-          <button type="button" id="toggle-units" class="btn-primary">Passer en °F</button>
+          <button type="button" id="toggle-units" class="btn-primary">
+            Passer en °F
+          </button>
         </div>
         <!-- ==================================================================== -->
 
         <!-- ====== BOUTON « Réinitialiser » CENTRÉ SOUS « Passer en °F » ====== -->
         <div class="center-button">
-          <button type="button" id="reset-btn" class="btn-secondary">Réinitialiser</button>
+          <button type="button" id="reset-btn" class="btn-secondary">
+            Réinitialiser
+          </button>
         </div>
         <!-- =========================================================================== -->
-
       </form>
     </section>
 
@@ -127,7 +139,12 @@
 
       <!-- Conteneur carte Leaflet -->
       <div id="map-container">
-        <div id="mapid" class="hidden" role="application" aria-label="Carte de localisation"></div>
+        <div
+          id="mapid"
+          class="hidden"
+          role="application"
+          aria-label="Carte de localisation"
+        ></div>
       </div>
     </section>
 
@@ -145,10 +162,9 @@
     </section>
 
     <!-- ========== FOOTER ========== -->
-    <footer>
-      © 2025 Instant Weather – Tous droits réservés
-    </footer>
-  </div> <!-- /#app-container -->
+    <footer>© 2025 Instant Weather – Tous droits réservés</footer>
+  </div>
+  <!-- /#app-container -->
 
   <!-- ========== SCRIPTS ========== -->
   <!-- 1) Leaflet JS (si vous utilisez une carte) -->
@@ -197,7 +213,9 @@
         //    Vider le canvas du graphique
         const chartCanvas = document.getElementById("tempChart");
         if (chartCanvas) {
-          chartCanvas.getContext("2d").clearRect(0, 0, chartCanvas.width, chartCanvas.height);
+          chartCanvas
+            .getContext("2d")
+            .clearRect(0, 0, chartCanvas.width, chartCanvas.height);
         }
 
         // 8) Re-cacher la section graphique
@@ -205,20 +223,42 @@
         if (chartSect) {
           chartSect.style.display = "none";
         }
+
+        // 9) Réinitialiser le bouton « Passer en °F » à son état par défaut
+        const btnToggleUnits = document.getElementById("toggle-units");
+        btnToggleUnits.textContent = "Passer en °F";
+        window.currentUnit = "C";
       });
 
       // ************** BOUTON TOGGLE °C / °F **************
       const btnToggleUnits = document.getElementById("toggle-units");
       btnToggleUnits.addEventListener("click", () => {
+        // Inverser la variable globale currentUnit
         window.currentUnit = window.currentUnit === "C" ? "F" : "C";
-        btnToggleUnits.textContent = window.currentUnit === "C" ? "Passer en °F" : "Passer en °C";
+
+        // Mettre à jour le texte du bouton
+        if (window.currentUnit === "C") {
+          btnToggleUnits.textContent = "Passer en °F";
+        } else {
+          btnToggleUnits.textContent = "Passer en °C";
+        }
+
+        // Si on a déjà une dernière position (lastLat, lastLon, lastNbJours), on relance fetchMeteo
         if (window.lastLat && window.lastLon && window.lastNbJours) {
-          const infos = Array.from(document.querySelectorAll('input[name="infos"]:checked')).map(cb => cb.value);
-          fetchMeteo(window.lastLat, window.lastLon, infos, window.lastNbJours);
+          const infosCheckboxes = document.querySelectorAll(
+            'input[name="infos"]:checked'
+          );
+          const infos = Array.from(infosCheckboxes).map((cb) => cb.value);
+          fetchMeteo(
+            window.lastLat,
+            window.lastLon,
+            infos,
+            window.lastNbJours
+          );
         }
       });
 
-      // ************** BOUTON CLAR/SOMBRE (dark-mode) **************
+      // ************** BOUTON BASCULER THÈME (dark-mode) **************
       const btnToggleTheme = document.getElementById("toggle-theme");
       // Au chargement de la page, on lit localStorage (clé « theme »)
       const storedTheme = localStorage.getItem("theme") || "light";

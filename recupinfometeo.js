@@ -71,7 +71,6 @@ async function fetchMeteo(lat, lon, infos, nbJours) {
 
     // 7) Dessiner le graphique des températures (affiche la section #chart-section)
     drawTemperatureChart(data.forecast.slice(0, nbJours));
-
   } catch (error) {
     // Exception réseau ou JSON mal formé
     console.error("Exception lors de l'appel à l'API Météo :", error);
@@ -168,24 +167,31 @@ function createForecastCards(forecastArray, infos) {
  */
 function getWeatherIcon(code) {
   const c = parseInt(code, 10);
+  // Ensoleillé : 0, 1, 2
   if (c === 0 || c === 1 || c === 2) {
     return "img/soleil.png";
   }
+  // Nuageux / couvert : 3, 4, 5
   if (c === 3 || c === 4 || c === 5) {
     return "img/nuage.png";
   }
+  // Brouillard / bruine : 6, 7, 8
   if (c === 6 || c === 7 || c === 8) {
     return "img/brouillard.png";
   }
+  // Pluie : 10–14, 40–42
   if ([10, 11, 12, 13, 14, 40, 41, 42].includes(c)) {
     return "img/nuage_pluie.png";
   }
+  // Orage : 20–24, 45–47
   if ([20, 21, 22, 23, 24, 45, 46, 47].includes(c)) {
     return "img/orage.png";
   }
+  // Neige / grésil : 30–37, 50–52
   if ([30, 31, 32, 33, 34, 35, 36, 37, 50, 51, 52].includes(c)) {
     return "img/neige.png";
   }
+  // Par défaut : nuage
   return "img/nuage.png";
 }
 
@@ -220,26 +226,26 @@ function convertTemp(tempC) {
  *   - Si tempChart existe déjà, on le détruit d’abord.
  */
 function drawTemperatureChart(forecastArray) {
-  // 1) afficher la section graphique
+  // 1) Afficher la section graphique
   const chartSect = document.getElementById("chart-section");
   if (chartSect) {
     chartSect.style.display = "flex";
   }
 
-  // 2) récupérer le context du canvas
+  // 2) Récupérer le contexte du canvas
   const ctx = document.getElementById("tempChart")?.getContext("2d");
   if (!ctx) return;
 
   const labels = forecastArray.map((_, i) => `Jour ${i + 1}`);
-  const dataMin = forecastArray.map(j => convertTemp(j.tmin));
-  const dataMax = forecastArray.map(j => convertTemp(j.tmax));
+  const dataMin = forecastArray.map((j) => convertTemp(j.tmin));
+  const dataMax = forecastArray.map((j) => convertTemp(j.tmax));
 
-  // 3) détruire l’ancien graphique s’il existe
+  // 3) Détruire l’ancien graphique s’il existe
   if (tempChart) {
     tempChart.destroy();
   }
 
-  // 4) créer le nouveau graphique
+  // 4) Créer le nouveau graphique
   tempChart = new Chart(ctx, {
     type: "line",
     data: {
@@ -253,7 +259,7 @@ function drawTemperatureChart(forecastArray) {
           fill: false,
           tension: 0.2,
           borderWidth: 2,
-          pointRadius: 4
+          pointRadius: 4,
         },
         {
           label: `Temp min (°${currentUnit})`,
@@ -263,46 +269,49 @@ function drawTemperatureChart(forecastArray) {
           fill: false,
           tension: 0.2,
           borderWidth: 2,
-          pointRadius: 4
-        }
-      ]
+          pointRadius: 4,
+        },
+      ],
     },
     options: {
       responsive: true,
-      maintainAspectRatio: false,
+      maintainAspectRatio: false, // Respecter la hauteur fixée par le CSS
       scales: {
         y: {
           beginAtZero: false,
           grid: { color: "#e0e0e0" },
-          ticks: { color: "#333333" }
+          ticks: { color: "#333333" },
         },
         x: {
           grid: { color: "#e0e0e0" },
-          ticks: { color: "#333333" }
-        }
+          ticks: { color: "#333333" },
+        },
       },
       plugins: {
         legend: {
           labels: {
             color: "#333333",
             boxWidth: 20,
-            boxHeight: 3
-          }
-        }
-      }
-    }
+            boxHeight: 3,
+          },
+        },
+      },
+    },
   });
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  // Toggle °C / °F – (redondant avec index.html, mais on le garde)
+  // Toggle °C / °F (redondant avec index.html, mais on le garde pour sécurité)
   const btnToggle = document.getElementById("toggle-units");
   if (btnToggle) {
     btnToggle.addEventListener("click", () => {
       currentUnit = currentUnit === "C" ? "F" : "C";
-      btnToggle.textContent = currentUnit === "C" ? "Passer en °F" : "Passer en °C";
+      btnToggle.textContent =
+        currentUnit === "C" ? "Passer en °F" : "Passer en °C";
       if (window.lastLat && window.lastLon && window.lastNbJours) {
-        const infos = Array.from(document.querySelectorAll('input[name="infos"]:checked')).map(cb => cb.value);
+        const infos = Array.from(
+          document.querySelectorAll('input[name="infos"]:checked')
+        ).map((cb) => cb.value);
         fetchMeteo(window.lastLat, window.lastLon, infos, window.lastNbJours);
       }
     });

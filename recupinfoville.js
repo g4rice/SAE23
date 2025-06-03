@@ -1,12 +1,14 @@
 // recupinfoville.js
 
-document.getElementById("weatherForm").addEventListener("submit", async function (e) {
+document.getElementById("weatherForm").addEventListener("submit", async function (
+  e
+) {
   e.preventDefault();
 
   const villeInput = document.getElementById("ville").value.trim();
   const infos = Array.from(
     document.querySelectorAll('input[name="infos"]:checked')
-  ).map(cb => cb.value);
+  ).map((cb) => cb.value);
   const nbJours = parseInt(document.getElementById("jours").value, 10);
 
   if (!villeInput) {
@@ -20,7 +22,9 @@ document.getElementById("weatherForm").addEventListener("submit", async function
   if (estCodePostal) {
     urlGeo = `https://geo.api.gouv.fr/communes?codePostal=${villeInput}&fields=nom,centre,codesPostaux&format=json&geometry=centre`;
   } else {
-    urlGeo = `https://geo.api.gouv.fr/communes?nom=${encodeURIComponent(villeInput)}&fields=nom,centre,codesPostaux&format=json&geometry=centre`;
+    urlGeo = `https://geo.api.gouv.fr/communes?nom=${encodeURIComponent(
+      villeInput
+    )}&fields=nom,centre,codesPostaux&format=json&geometry=centre`;
   }
 
   try {
@@ -35,22 +39,30 @@ document.getElementById("weatherForm").addEventListener("submit", async function
     }
 
     // Choisir la première commune avec coordonnées valides
-    const commune = data.find(c => c.centre && c.centre.coordinates);
+    const commune = data.find((c) => c.centre && c.centre.coordinates);
     if (!commune) {
-      document.getElementById("commune-name").innerText = "Commune sans coordonnées.";
+      document.getElementById("commune-name").innerText =
+        "Commune sans coordonnées.";
       clearMapAndForecast();
       return;
     }
 
+    // Extraire latitude et longitude (4 décimales)
     const lat = commune.centre.coordinates[1].toFixed(4);
     const lon = commune.centre.coordinates[0].toFixed(4);
-    const cp = Array.isArray(commune.codesPostaux) && commune.codesPostaux.length > 0
-      ? commune.codesPostaux[0]
-      : "";
 
-    document.getElementById("commune-name").innerText = `${commune.nom}${cp ? ", " + cp : ""}`;
+    // Récupérer le code postal (le premier si plusieurs)
+    const cp =
+      Array.isArray(commune.codesPostaux) && commune.codesPostaux.length > 0
+        ? commune.codesPostaux[0]
+        : "";
 
-    // Affichage conditionnel de la latitude/longitude
+    // Afficher le nom de la commune + son code postal
+    document.getElementById(
+      "commune-name"
+    ).innerText = `${commune.nom}${cp ? ", " + cp : ""}`;
+
+    // ===== Affichage conditionnel de la latitude/longitude =====
     const coordsDiv = document.getElementById("coords");
     coordsDiv.innerHTML = "";
     if (infos.includes("latitude")) {
@@ -63,11 +75,16 @@ document.getElementById("weatherForm").addEventListener("submit", async function
       pLon.innerText = `Longitude : ${lon}`;
       coordsDiv.appendChild(pLon);
     }
+    // ===========================================================
 
+    // Réinitialiser/masquer la carte si elle existait
     resetMapContainer();
-    initMap(lat, lon);
-    fetchMeteo(lat, lon, infos, nbJours);
 
+    // Toujours afficher la carte, quel que soit l’état des cases latitude/longitude
+    initMap(lat, lon);
+
+    // Enfin, récupérer la météo
+    fetchMeteo(lat, lon, infos, nbJours);
   } catch (error) {
     console.error("Erreur lors de la récupération des infos de la commune :", error);
     document.getElementById("commune-name").innerText = "Erreur API Géo.";
@@ -107,24 +124,30 @@ function initMap(lat, lon) {
   const mapDiv = document.getElementById("mapid");
   if (!mapDiv) return;
 
+  // Rendre visible la div #mapid
   mapDiv.classList.remove("hidden");
 
+  // Supprimer une ancienne instance de carte, si elle existe
   if (window._leafletMap) {
     window._leafletMap.remove();
   }
 
+  // Créer la nouvelle carte Leaflet
   const map = L.map("mapid").setView([lat, lon], 12);
   window._leafletMap = map;
 
+  // Ajouter le tile layer OpenStreetMap
   L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-    attribution: '© OpenStreetMap contributors'
+    attribution: "© OpenStreetMap contributors",
   }).addTo(map);
 
+  // Placer un marqueur avec popup (nom de la commune + code postal)
   L.marker([lat, lon])
     .addTo(map)
     .bindPopup(`${document.getElementById("commune-name").innerText}`)
     .openPopup();
 
+  // Forcer Leaflet à recalculer la taille du conteneur
   map.invalidateSize();
 }
 
@@ -133,7 +156,7 @@ document.addEventListener("DOMContentLoaded", () => {
   geoBtn.addEventListener("click", () => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
-        position => {
+        (position) => {
           const lat = position.coords.latitude.toFixed(4);
           const lon = position.coords.longitude.toFixed(4);
 
@@ -146,7 +169,9 @@ document.addEventListener("DOMContentLoaded", () => {
           initMap(lat, lon);
 
           // Récupérer à nouveau la liste des cases cochées “infos”
-          const infos = Array.from(document.querySelectorAll('input[name="infos"]:checked')).map(cb => cb.value);
+          const infos = Array.from(
+            document.querySelectorAll('input[name="infos"]:checked')
+          ).map((cb) => cb.value);
 
           // Afficher la latitude/longitude uniquement si la case est cochée
           const coordsDiv = document.getElementById("coords");
@@ -166,7 +191,7 @@ document.addEventListener("DOMContentLoaded", () => {
           const nbJours = parseInt(document.getElementById("jours").value, 10);
           fetchMeteo(lat, lon, infos, nbJours);
         },
-        error => {
+        (error) => {
           alert("Impossible d’obtenir la position : " + error.message);
         }
       );
