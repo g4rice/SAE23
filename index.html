@@ -35,16 +35,25 @@
     <!-- ========== SECTION RECHERCHE (FORMULAIRE) ========== -->
     <section id="search-section">
       <form id="weatherForm">
-        <!-- Champ « Ville » -->
-        <div class="form-group">
+        <!-- =============================================
+             Conteneur “Recherche” + bouton géolocalisation
+             ============================================= -->
+        <div class="form-group search-with-geo">
           <label for="ville">Recherche&nbsp;:</label>
-          <input
-            type="text"
-            id="ville"
-            placeholder="Ex : Marseille ou 13000"
-            aria-required="true"
-          />
+          <!-- On enveloppe l’input et le bouton géolocalisation dans un flex -->
+          <div class="input-geo-container">
+            <input
+              type="text"
+              id="ville"
+              placeholder="Ex : Marseille ou 13000"
+              aria-required="true"
+            />
+            <button type="button" id="geo-btn" class="btn-secondary geo-button" title="Utiliser ma position">
+              📍
+            </button>
+          </div>
         </div>
+        <!-- =================================================== -->
 
         <!-- Champ « Nombre de jours » -->
         <div class="form-group">
@@ -87,12 +96,18 @@
           </label>
         </fieldset>
 
-        <!-- Boutons d’action -->
-        <div class="buttons-container">
+        <!-- ====== BOUTON « Afficher la météo » CENTRÉ SOUS INFOS-SUP ====== -->
+        <div class="center-button">
           <button type="submit" class="btn-primary">Afficher la météo</button>
-          <button type="button" id="toggle-units" class="btn-secondary">Passer en °F</button>
-          <button type="button" id="geo-btn" class="btn-secondary">📍 Utiliser ma position</button>
         </div>
+        <!-- =============================================================== -->
+
+        <!-- ====== BOUTON « Passer en °F » CENTRÉ SOUS « Afficher la météo » ====== -->
+        <div class="center-button">
+          <button type="button" id="toggle-units" class="btn-primary">Passer en °F</button>
+        </div>
+        <!-- ==================================================================== -->
+
       </form>
     </section>
 
@@ -152,7 +167,7 @@
         return;
       }
 
-      //  Au chargement, on regarde dans localStorage si l’utilisateur avait demandé le "dark"
+      // Au chargement, on regarde dans localStorage si l’utilisateur avait demandé le "dark"
       if (localStorage.getItem('theme') === 'dark') {
         document.body.classList.add('dark-mode');
         btnToggle.textContent = '☀️';
