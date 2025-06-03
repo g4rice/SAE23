@@ -199,6 +199,12 @@
         if (chartCanvas) {
           chartCanvas.getContext("2d").clearRect(0, 0, chartCanvas.width, chartCanvas.height);
         }
+
+        // 8) Re-cacher la section graphique
+        const chartSect = document.getElementById("chart-section");
+        if (chartSect) {
+          chartSect.style.display = "none";
+        }
       });
 
       // ************** BOUTON TOGGLE °C / °F **************

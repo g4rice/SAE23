@@ -12,7 +12,7 @@ window.lastNbJours = null;
  *
  * @param {string} lat       - latitude (ex. "48.8566")
  * @param {string} lon       - longitude (ex. "2.3522")
- * @param {Array<string>} infos - cases cochées (["latitude","pluie","vent","direction"])
+ * @param {Array<string>} infos - cases cochées (["latitude","pluie","vent","direction"] )
  * @param {number} nbJours      - nombre de jours souhaité (1 à 7)
  */
 async function fetchMeteo(lat, lon, infos, nbJours) {
@@ -69,7 +69,7 @@ async function fetchMeteo(lat, lon, infos, nbJours) {
     // 6) Masquer le loader
     document.getElementById("loader").classList.add("hidden");
 
-    // 7) Dessiner le graphique des températures
+    // 7) Dessiner le graphique des températures (affiche la section #chart-section)
     drawTemperatureChart(data.forecast.slice(0, nbJours));
 
   } catch (error) {
@@ -216,8 +216,17 @@ function convertTemp(tempC) {
 
 /**
  * Dessine un graphique Chart.js avec températures min et max.
+ *   - Avant de dessiner le graphique, on affiche la section #chart-section
+ *   - Si tempChart existe déjà, on le détruit d’abord.
  */
 function drawTemperatureChart(forecastArray) {
+  // 1) afficher la section graphique
+  const chartSect = document.getElementById("chart-section");
+  if (chartSect) {
+    chartSect.style.display = "flex";
+  }
+
+  // 2) récupérer le context du canvas
   const ctx = document.getElementById("tempChart")?.getContext("2d");
   if (!ctx) return;
 
@@ -225,10 +234,12 @@ function drawTemperatureChart(forecastArray) {
   const dataMin = forecastArray.map(j => convertTemp(j.tmin));
   const dataMax = forecastArray.map(j => convertTemp(j.tmax));
 
+  // 3) détruire l’ancien graphique s’il existe
   if (tempChart) {
     tempChart.destroy();
   }
 
+  // 4) créer le nouveau graphique
   tempChart = new Chart(ctx, {
     type: "line",
     data: {
@@ -284,9 +295,7 @@ function drawTemperatureChart(forecastArray) {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  // Toggle °C / °F – cette partie est maintenant redondante (déjà dans index.html),
-  // mais on la laisse ici pour compatibilité si l’utilisateur charge directement ce script.
-  // En pratique, c’est le script du index.html qui sera pris en priorité.
+  // Toggle °C / °F – (redondant avec index.html, mais on le garde)
   const btnToggle = document.getElementById("toggle-units");
   if (btnToggle) {
     btnToggle.addEventListener("click", () => {

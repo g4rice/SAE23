@@ -463,14 +463,15 @@
   
   /* ===========================================================
      SECTION GRAPHIQUE (Chart.js)
+     — masquée par défaut (display:none)
      =========================================================== */
   #chart-section {
+    display: none;            /* Masquée au chargement et après réinitialisation */
     background-color: #ffffff;
     border-radius: 12px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
     padding: 1rem;
     margin-bottom: 2rem;
-    display: flex;
     flex-direction: column;
     align-items: center;
   }
@@ -495,6 +496,28 @@
     width: 100% !important;
     max-width: 100% !important;
     height: 400px !important; /* hauteur augmentée */
+  }
+  
+  /* ===========================================================
+     BOUTON « Réinitialiser » EN ROUGE
+     =========================================================== */
+  #reset-btn {
+    background-color: #e74c3c;   /* rouge vif */
+    border: 2px solid #e74c3c;    /* bordure rouge */
+    color: #ffffff;               /* texte blanc */
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    padding: 0.75rem 1.5rem;
+    cursor: pointer;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+  
+  #reset-btn:hover {
+    background-color: #c0392b;   /* rouge un peu plus foncé au hover */
+    border-color: #c0392b;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   }
   
   /* ===========================================================
