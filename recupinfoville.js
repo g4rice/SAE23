@@ -4,7 +4,6 @@ document.getElementById("weatherForm").addEventListener("submit", async function
   e.preventDefault();
 
   const villeInput = document.getElementById("ville").value.trim();
-  // On récupère la liste des cases cochées “infos”
   const infos = Array.from(
     document.querySelectorAll('input[name="infos"]:checked')
   ).map(cb => cb.value);
@@ -35,7 +34,7 @@ document.getElementById("weatherForm").addEventListener("submit", async function
       return;
     }
 
-    // On prend la première commune valide
+    // Choisir la première commune avec coordonnées valides
     const commune = data.find(c => c.centre && c.centre.coordinates);
     if (!commune) {
       document.getElementById("commune-name").innerText = "Commune sans coordonnées.";
@@ -76,7 +75,6 @@ document.getElementById("weatherForm").addEventListener("submit", async function
   }
 });
 
-
 /**
  * Supprime une éventuelle carte Leaflet existante, puis cache #mapid.
  */
@@ -103,7 +101,7 @@ function clearMapAndForecast() {
 }
 
 /**
- * Initialise la carte Leaflet centrée sur [lat, lon].
+ * Initialise la carte Leaflet centrée sur [lat, lon] et appelle invalidateSize().
  */
 function initMap(lat, lon) {
   const mapDiv = document.getElementById("mapid");
@@ -130,7 +128,6 @@ function initMap(lat, lon) {
   map.invalidateSize();
 }
 
-
 document.addEventListener("DOMContentLoaded", () => {
   const geoBtn = document.getElementById("geo-btn");
   geoBtn.addEventListener("click", () => {
@@ -140,18 +137,18 @@ document.addEventListener("DOMContentLoaded", () => {
           const lat = position.coords.latitude.toFixed(4);
           const lon = position.coords.longitude.toFixed(4);
 
-          // On indique à l'utilisateur que la géolocalisation est active
+          // Indiquer que la géolocalisation est active
           document.getElementById("ville").value = "Ma position";
           document.getElementById("commune-name").innerText = "Géolocalisation activée";
 
-          // On affiche la carte sans toucher aux cases cochées
+          // Afficher la carte sans toucher aux cases cochées
           resetMapContainer();
           initMap(lat, lon);
 
-          // On récupère à nouveau la liste des cases cochées “infos”
+          // Récupérer à nouveau la liste des cases cochées “infos”
           const infos = Array.from(document.querySelectorAll('input[name="infos"]:checked')).map(cb => cb.value);
 
-          // On affiche la latitude/longitude uniquement si la case est cochée
+          // Afficher la latitude/longitude uniquement si la case est cochée
           const coordsDiv = document.getElementById("coords");
           coordsDiv.innerHTML = "";
           if (infos.includes("latitude")) {

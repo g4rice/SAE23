@@ -96,15 +96,12 @@
     margin-bottom: 2rem;
   }
   
-  /* Quand on est en "dark-mode", on garde toujours le formulaire blanc */
+  /* Lorsque l’on est en "dark-mode", on garde toujours le formulaire blanc */
   body.dark-mode #search-section {
     background: #ffffff;
     color: #333333;
   }
   
-  /* -----------------------------------------------------------
-     Form-group général
-     ----------------------------------------------------------- */
   #search-section .form-group {
     margin-bottom: 1.2rem;
   }
@@ -116,9 +113,9 @@
     font-size: 0.95rem;
   }
   
-  /* -----------------------------------------------------------
+  /* ===========================================================
      NOUVEAU : conteneur flex pour l’input + bouton géolocalisation
-     ----------------------------------------------------------- */
+     =========================================================== */
   .search-with-geo {
     display: flex;
     flex-direction: column; /* Le label au-dessus, puis la ligne input+button */
@@ -168,11 +165,6 @@
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   }
-  
-  /* Si vous préférez afficher aussi le texte “Utiliser ma position” au lieu de
-     simplement l’emoji, remplacez dans le HTML                  */
-  /*   <button class="geo-button">📍 Utiliser ma position</button>  */
-  /* Et ajustez la largeur/min-height ci-dessus (par exemple width: auto). */
   
   /* ===========================================================
      SLIDER POUR NOMBRE DE JOURS
@@ -250,7 +242,7 @@
   }
   
   /* ===========================================================
-     CENTRER LES BOUTONS « Afficher la météo » et « Passer en °F »
+     CENTRER LES BOUTONS « Afficher la météo », « Passer en °F », « Réinitialiser »
      =========================================================== */
   .center-button {
     text-align: center;
@@ -281,9 +273,40 @@
   }
   
   /* ===========================================================
-     BOUTON SEULEMENT SOUS « Passer en °F » : (aucun autre bouton ici)
+     Bouton secondaire (btn-secondary)
+     (reste inchangé)
      =========================================================== */
-  /* Aucun style n’a changé pour “Passer en °F” (il a la même classe .btn-primary) */
+  .btn-secondary {
+    background-color: #ffffff;
+    color: #1A3A66;
+    border: 2px solid #1A3A66;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    padding: 0.75rem 1.5rem;
+    cursor: pointer;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+  
+  .btn-secondary:hover {
+    background-color: #1A3A66;
+    color: #ffffff;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Responsive (<500px) : boutons en pleine largeur */
+  @media (max-width: 500px) {
+    .buttons-container {
+      gap: 0.5rem;
+    }
+    .buttons-container button {
+      width: 100%;
+      text-align: center;
+      padding: 0.6rem 1rem;
+      font-size: 0.95rem;
+    }
+  }
   
   /* ===========================================================
      SECTION CARTE LEAFLET

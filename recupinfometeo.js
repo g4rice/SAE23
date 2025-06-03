@@ -165,46 +165,27 @@ function createForecastCards(forecastArray, infos) {
 
 /**
  * Renvoie le chemin local vers l’icône météo correspondant au code numérique.
- *
- * Les fichiers d’icônes doivent exister dans img/ :
- * - img/soleil.png
- * - img/nuage.png
- * - img/nuage_pluie.png
- * - img/orage.png
- * - img/neige.png
- * - img/brouillard.png
- *
- * @param {number|string} code - code météo (ex. 0, 12, 23, etc.)
- * @returns {string} chemin relatif vers l’image
  */
 function getWeatherIcon(code) {
   const c = parseInt(code, 10);
-
-  // Ensoleillé : 0, 1, 2
   if (c === 0 || c === 1 || c === 2) {
     return "img/soleil.png";
   }
-  // Nuageux / couvert : 3, 4, 5
   if (c === 3 || c === 4 || c === 5) {
     return "img/nuage.png";
   }
-  // Brouillard / bruine : 6, 7, 8
   if (c === 6 || c === 7 || c === 8) {
     return "img/brouillard.png";
   }
-  // Pluie : 10–14, 40–42
   if ([10, 11, 12, 13, 14, 40, 41, 42].includes(c)) {
     return "img/nuage_pluie.png";
   }
-  // Orage : 20–24, 45–47
   if ([20, 21, 22, 23, 24, 45, 46, 47].includes(c)) {
     return "img/orage.png";
   }
-  // Neige / grésil : 30–37, 50–52
   if ([30, 31, 32, 33, 34, 35, 36, 37, 50, 51, 52].includes(c)) {
     return "img/neige.png";
   }
-  // Par défaut : nuage
   return "img/nuage.png";
 }
 
@@ -235,8 +216,6 @@ function convertTemp(tempC) {
 
 /**
  * Dessine un graphique Chart.js avec températures min et max.
- * - width : 100% du parent (via CSS)
- * - height : fixé à 300px (via CSS + maintainAspectRatio:false)
  */
 function drawTemperatureChart(forecastArray) {
   const ctx = document.getElementById("tempChart")?.getContext("2d");
@@ -279,24 +258,16 @@ function drawTemperatureChart(forecastArray) {
     },
     options: {
       responsive: true,
-      maintainAspectRatio: false, // Permet de respecter la hauteur fixée par le CSS
+      maintainAspectRatio: false,
       scales: {
         y: {
           beginAtZero: false,
-          grid: {
-            color: "#e0e0e0"
-          },
-          ticks: {
-            color: "#333333"
-          }
+          grid: { color: "#e0e0e0" },
+          ticks: { color: "#333333" }
         },
         x: {
-          grid: {
-            color: "#e0e0e0"
-          },
-          ticks: {
-            color: "#333333"
-          }
+          grid: { color: "#e0e0e0" },
+          ticks: { color: "#333333" }
         }
       },
       plugins: {
@@ -313,31 +284,18 @@ function drawTemperatureChart(forecastArray) {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  // Toggle °C / °F
+  // Toggle °C / °F – cette partie est maintenant redondante (déjà dans index.html),
+  // mais on la laisse ici pour compatibilité si l’utilisateur charge directement ce script.
+  // En pratique, c’est le script du index.html qui sera pris en priorité.
   const btnToggle = document.getElementById("toggle-units");
-  btnToggle.addEventListener("click", () => {
-    currentUnit = currentUnit === "C" ? "F" : "C";
-    btnToggle.textContent = currentUnit === "C" ? "Passer en °F" : "Passer en °C";
-    if (window.lastLat && window.lastLon && window.lastNbJours) {
-      const infos = Array.from(document.querySelectorAll('input[name="infos"]:checked')).map(cb => cb.value);
-      fetchMeteo(window.lastLat, window.lastLon, infos, window.lastNbJours);
-    }
-  });
-
-  // Toggle light/dark theme
-  const storedTheme = localStorage.getItem("theme");
-  if (storedTheme === "light") {
-    document.body.classList.add("light-mode");
-    document.getElementById("toggle-theme").textContent = "Dark theme";
-  } else {
-    document.body.classList.remove("light-mode");
-    document.getElementById("toggle-theme").textContent = "Light theme";
+  if (btnToggle) {
+    btnToggle.addEventListener("click", () => {
+      currentUnit = currentUnit === "C" ? "F" : "C";
+      btnToggle.textContent = currentUnit === "C" ? "Passer en °F" : "Passer en °C";
+      if (window.lastLat && window.lastLon && window.lastNbJours) {
+        const infos = Array.from(document.querySelectorAll('input[name="infos"]:checked')).map(cb => cb.value);
+        fetchMeteo(window.lastLat, window.lastLon, infos, window.lastNbJours);
+      }
+    });
   }
-
-  document.getElementById("toggle-theme").addEventListener("click", () => {
-    document.body.classList.toggle("light-mode");
-    const isLight = document.body.classList.contains("light-mode");
-    document.getElementById("toggle-theme").textContent = isLight ? "Dark theme" : "Light theme";
-    localStorage.setItem("theme", isLight ? "light" : "dark");
-  });
 });
