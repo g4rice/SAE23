@@ -28,7 +28,7 @@ async function fetchMeteo(lat, lon, infos, nbJours) {
   // Afficher le loader
   document.getElementById("loader").classList.remove("hidden");
 
-  // Remplacez par votre propre token valide
+  // Token d'accès
   const token = "87a1a742543d8b724a785e8adaf301ae55e2b30931364629dd660d785001e0b7";
 
   try {
