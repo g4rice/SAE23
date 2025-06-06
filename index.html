@@ -1,18 +1,18 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <title>Instant Weather</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <!-- FEUILLE DE STYLE PRINCIPALE -->
-  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="styles.css">
 
   <!-- LEAFLET CSS (si vous l’utilisez) -->
   <link
     rel="stylesheet"
     href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-  />
+  >
 
   <!-- CHART.JS (si vous l’utilisez) -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -23,7 +23,7 @@
          HEADER : logo centré + bouton sombre/clair en haut à droite
          ======================================================= -->
     <header>
-      <img src="img/logo.png" alt="Instant Weather" class="logo" />
+      <img src="img/logo.png" alt="Instant Weather" class="logo">
       <button
         id="toggle-theme"
         class="btn-icon"
@@ -35,6 +35,7 @@
 
     <!-- ========== SECTION RECHERCHE (FORMULAIRE) ========== -->
     <section id="search-section">
+      <h2>Recherche de la météo</h2>
       <form id="weatherForm">
         <!-- =============================================
              Conteneur “Recherche” + bouton géolocalisation
@@ -47,7 +48,7 @@
               id="ville"
               placeholder="Ex : Caen ou 14000"
               aria-required="true"
-            />
+            >
             <button
               type="button"
               id="geo-btn"
@@ -71,7 +72,7 @@
               max="7"
               value="1"
               oninput="this.nextElementSibling.innerText = this.value + (this.value > 1 ? ' jours' : ' jour')"
-            />
+            >
             <span class="slider-value">1 jour</span>
           </div>
         </div>
@@ -80,23 +81,23 @@
         <fieldset class="infos-sup">
           <legend>Informations supplémentaires&nbsp;:</legend>
           <label>
-            <input type="checkbox" name="infos" value="latitude" />
+            <input type="checkbox" name="infos" value="latitude">
             Latitude
           </label>
           <label>
-            <input type="checkbox" name="infos" value="longitude" />
+            <input type="checkbox" name="infos" value="longitude">
             Longitude
           </label>
           <label>
-            <input type="checkbox" name="infos" value="pluie" />
+            <input type="checkbox" name="infos" value="pluie">
             Cumul de pluie (mm)
           </label>
           <label>
-            <input type="checkbox" name="infos" value="vent" />
+            <input type="checkbox" name="infos" value="vent">
             Vent moyen (km/h)
           </label>
           <label>
-            <input type="checkbox" name="infos" value="direction" />
+            <input type="checkbox" name="infos" value="direction">
             Direction du vent (°)
           </label>
         </fieldset>
@@ -127,6 +128,7 @@
 
     <!-- ========== SECTION CARTE LEAFLET ========== -->
     <section id="map-section">
+      <!-- On peut conserver le h2 dynamique “#commune-name” qui affiche le nom de la ville. -->
       <h2 id="commune-name"></h2>
 
       <!-- Conteneur pour afficher latitude/longitude si sélectionné -->
@@ -150,6 +152,7 @@
 
     <!-- ========== SECTION PRÉVISIONS MÉTÉO ========== -->
     <section id="forecast-section">
+      <h2>Prévisions météo</h2>
       <div id="forecast-container">
         <!-- Les forecast-cards seront injectées ici par recupinfometeo.js -->
       </div>
@@ -157,7 +160,8 @@
 
     <!-- ========== SECTION GRAPHIQUE (Chart.js) ========== -->
     <section id="chart-section">
-      <h3 class="chart-title">Graphique des températures pour plusieurs jours</h3>
+      <!-- Passage de h3 à h2 pour faire un titre de section valide -->
+      <h2 class="chart-title">Graphique des températures pour plusieurs jours</h2>
       <canvas id="tempChart"></canvas>
     </section>
 
